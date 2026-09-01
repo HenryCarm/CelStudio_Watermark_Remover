@@ -1,0 +1,16 @@
+
+======================= [FATAL CRASH DUMP] =======================
+Timestamp: 2026-09-01T10:56:20.468397
+Error Type: NameError
+Error Message: name 'threading' is not defined
+
+Traceback:
+Traceback (most recent call last):
+  File "<string>", line 2, in <module>
+  File "/home/henry/Documents/Projects/Python/CelStudio WR/core/logger.py", line 170, in install_hard_crash_handler
+    if hasattr(threading, "excepthook"):
+               ^^^^^^^^^
+NameError: name 'threading' is not defined. Did you forget to import 'threading'
+
+Dumped To: /home/henry/Documents/Projects/Python/CelStudio WR/logs/CRASH_2026-09-01_10-56-20.log
+==================================================================

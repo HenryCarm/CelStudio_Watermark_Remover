@@ -1,0 +1,13 @@
+
+======================= [FATAL CRASH DUMP] =======================
+Timestamp: 2026-09-01T10:56:24.761631
+Error Type: ZeroDivisionError
+Error Message: division by zero
+
+Traceback:
+Traceback (most recent call last):
+  File "<string>", line 4, in <module>
+ZeroDivisionError: division by zero
+
+Dumped To: /home/henry/Documents/Projects/Python/CelStudio WR/logs/CRASH_2026-09-01_10-56-24.log
+==================================================================

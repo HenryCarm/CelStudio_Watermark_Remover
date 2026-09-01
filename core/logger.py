@@ -1,4 +1,4 @@
-import sys, os, json, base64, traceback, shutil, subprocess, time, signal
+import sys, os, json, base64, traceback, shutil, subprocess, time, signal, threading
 from pathlib import Path
 from datetime import datetime
 from concurrent.futures import ThreadPoolExecutor
@@ -137,4 +137,38 @@ def safe_trash_file(p: Path) -> bool:
     except Exception as exc:
         print(f"[SAFE_TRASH] Error moving {p} to trash: {exc}")
         return False
+
+def install_hard_crash_handler():
+    """Installs a strict global crash handler that catches any error, writes full traceback to a log file, and immediately hard-crashes."""
+    def _handle_exception(exc_type, exc_value, exc_tb):
+        try:
+            log_dir = get_log_dir()
+            log_dir.mkdir(parents=True, exist_ok=True)
+            ts = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+            crash_file = log_dir / f"CRASH_{ts}.log"
+            tb_str = "".join(traceback.format_exception(exc_type, exc_value, exc_tb))
+            
+            crash_msg = (
+                f"\n======================= [FATAL CRASH DUMP] =======================\n"
+                f"Timestamp: {datetime.now().isoformat()}\n"
+                f"Error Type: {getattr(exc_type, '__name__', str(exc_type))}\n"
+                f"Error Message: {exc_value}\n\n"
+                f"Traceback:\n{tb_str}\n"
+                f"Dumped To: {crash_file}\n"
+                f"==================================================================\n"
+            )
+            with open(crash_file, "w", encoding="utf-8") as f:
+                f.write(crash_msg)
+        except Exception:
+            pass
+            
+        sys.stderr.write(crash_msg if 'crash_msg' in locals() else f"Fatal error: {exc_value}\n")
+        sys.stderr.flush()
+        os._exit(1)
+        
+    sys.excepthook = _handle_exception
+    if hasattr(threading, "excepthook"):
+        threading.excepthook = lambda args: _handle_exception(args.exc_type, args.exc_value, args.exc_traceback)
+    return _handle_exception
+
 

@@ -11,6 +11,10 @@ import flet as ft
 from core.constants import get_wallpaper_path, get_save_dir, get_data_dir
 from core.settings_manager import load_settings, save_settings
 from core.engine import _inpaint_smart, _inpaint_cel_ai, _inpaint_quick, _inpaint_precision
+from core.logger import install_hard_crash_handler
+
+# Install global fatal error crash handler
+_hard_crash = install_hard_crash_handler()
 
 def cv2_to_base64(img_bgr: np.ndarray, max_dim: int = 1200) -> str:
     """Convert BGR OpenCV image to base64 Data URI with optional max dimension downsampling for speed."""
@@ -679,5 +683,11 @@ def main(page: ft.Page):
     page.add(root_stack)
     on_page_resize(None)
 
+def safe_main(page: ft.Page):
+    try:
+        main(page)
+    except Exception as exc:
+        _hard_crash(type(exc), exc, exc.__traceback__)
+
 if __name__ == "__main__":
-    ft.run(main)
+    ft.run(safe_main)
