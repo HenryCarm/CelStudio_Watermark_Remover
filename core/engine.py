@@ -216,26 +216,32 @@ def _inpaint_quick(img: np.ndarray, mask: np.ndarray) -> np.ndarray:
 
 def _inpaint_smart(img: np.ndarray, mask: np.ndarray,
                    cb=None) -> np.ndarray:
-    result    = img.copy()
-    remaining = (mask > 0).astype(np.uint8)
-    se        = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (7, 7))
-    rings: list[np.ndarray] = []
-    current   = remaining.copy()
-    while current.any():
-        eroded = cv2.erode(current, se)
-        ring   = cv2.subtract(current, eroded)
-        if ring.any():
-            rings.append(ring)
-        else:
-            rings.append(current)
-            break
-        current = eroded
-    total = max(len(rings), 1)
-    for i, ring in enumerate(rings):
-        result = cv2.inpaint(result, (ring > 0).astype(np.uint8) * 255,
-                             5, cv2.INPAINT_TELEA)
-        if cb:
-            cb(int((i + 1) / total * 100))
+    if mask is None or not mask.any():
+        return img.copy()
+
+    # 1. Analyze the surrounding boundary (15 pixels out)
+    k_dilate = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (15, 15))
+    dilated_mask = cv2.dilate(mask, k_dilate)
+    border_mask = cv2.subtract(dilated_mask, mask)
+    
+    if border_mask.any():
+        border_pixels = img[border_mask > 0]
+        std_dev = np.std(border_pixels, axis=0)
+        
+        # 2. Solid color detection! If the surrounding variance is very low, it's a solid background
+        if np.max(std_dev) < 18.0:
+            median_color = np.median(border_pixels, axis=0)
+            result = img.copy()
+            result[mask > 0] = median_color
+            # Light edge blending so the patch isn't a harsh cut
+            edge_mask = cv2.dilate(mask, cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (5, 5))) - cv2.erode(mask, cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (5, 5)))
+            result = cv2.inpaint(result, edge_mask, 3, cv2.INPAINT_NS)
+            if cb: cb(100)
+            return result
+
+    # 3. Fallback for textured/complex backgrounds: Navier-Stokes handles structure better than Telea
+    result = cv2.inpaint(img, mask, 9, cv2.INPAINT_NS)
+    if cb: cb(100)
     return result
 
 def _inpaint_precision(img: np.ndarray, mask: np.ndarray,

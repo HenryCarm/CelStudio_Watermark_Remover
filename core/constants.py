@@ -30,7 +30,7 @@ from PySide6.QtGui import (
 )
 
 # ─── Paths ────────────────────────────────────────────────────────────────────
-SCRIPT_DIR    = Path(__file__).resolve().parent
+SCRIPT_DIR    = Path(__file__).resolve().parent.parent
 ICON_PATH     = SCRIPT_DIR / "icon.png"
 BANNER_PATH   = SCRIPT_DIR / "banner.png"
 WALLPAPER_PATH = SCRIPT_DIR / "wallpaper.webp"

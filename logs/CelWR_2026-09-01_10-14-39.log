@@ -1,0 +1,8 @@
+
+--- [CelWR Live Logger Started: 2026-09-01 10:14:39 (v1.7.0)] ---
+[2026-09-01 10:14:39] [LOGGER] Live diagnostic logging started at /home/henry/Documents/Projects/Python/CelStudio WR/logs/CelWR_2026-09-01_10-14-39.log
+[2026-09-01 10:15:58] Traceback (most recent call last):
+[2026-09-01 10:15:58]   File "/home/henry/Documents/Projects/Python/CelStudio WR/ui/main_window.py", line 656, in _tab_changed
+    [2026-09-01 10:15:58] self._pv.refresh()
+    [2026-09-01 10:15:58] ^[2026-09-01 10:15:58] ^[2026-09-01 10:15:58] ^[2026-09-01 10:15:58] ^[2026-09-01 10:15:58] ^[2026-09-01 10:15:58] ^[2026-09-01 10:15:58] ^[2026-09-01 10:15:58] ^[2026-09-01 10:15:58] ^[2026-09-01 10:15:58] ^[2026-09-01 10:15:58] ^[2026-09-01 10:15:58] ^[2026-09-01 10:15:58] ^[2026-09-01 10:15:58] ^[2026-09-01 10:15:58] ^[2026-09-01 10:15:58] ^
+[2026-09-01 10:15:58] AttributeError[2026-09-01 10:15:58] : [2026-09-01 10:15:58] 'ProgressView' object has no attribute 'refresh'
