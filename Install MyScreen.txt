@@ -1,0 +1,57 @@
+# 📦 MyScreen Watermark Remover - Packaging & Build Guide 🚀✨
+
+To package **MyScreen Watermark Remover** into high-performance, standalone binaries, use **Nuitka** (recommended standard: PyArmor + Nuitka).
+
+---
+
+## 1. Prerequisites 🛠️
+
+Ensure Nuitka and dependencies are installed in your central Python environment:
+
+```bash
+/home/henry/Documents/Projects/Python/venv/bin/python -m pip install nuitka zstandard ordered-set
+```
+
+---
+
+## 2. Nuitka Dual Build Distribution Standard ⚡
+
+Always produce both **Standalone** (folder distribution with ultra-fast startup) and **Onefile** (single portable executable) builds:
+
+### A. Standalone Folder Build (Fastest Startup) 🚀
+```bash
+/home/henry/Documents/Projects/Python/venv/bin/python -m nuitka \
+    --standalone \
+    --enable-plugin=pyqt6 \
+    --include-data-file=icon.png=icon.png \
+    --linux-icon=icon.png \
+    --windows-icon-from-ico=icon.png \
+    --output-dir=dist/standalone \
+    "MS WR.py"
+```
+
+### B. Portable Onefile Executable (Single File) 📦
+```bash
+/home/henry/Documents/Projects/Python/venv/bin/python -m nuitka \
+    --onefile \
+    --enable-plugin=pyqt6 \
+    --include-data-file=icon.png=icon.png \
+    --linux-icon=icon.png \
+    --windows-icon-from-ico=icon.png \
+    --output-dir=dist/onefile \
+    "MS WR.py"
+```
+
+---
+
+## 3. Mobile (Flet / Android) 📱
+
+For mobile companion apps:
+
+```bash
+/home/henry/Documents/Projects/Python/venv/bin/python -m pip install flet
+```
+*Note: Always use Cloud Build CI/CD (GitHub Actions) for Android APK generation.*
+
+
+
