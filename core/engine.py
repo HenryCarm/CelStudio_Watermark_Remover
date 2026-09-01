@@ -226,11 +226,20 @@ def _inpaint_smart(img: np.ndarray, mask: np.ndarray,
     
     if border_mask.any():
         border_pixels = img[border_mask > 0]
-        std_dev = np.std(border_pixels, axis=0)
         
-        # 2. Solid color detection! If the surrounding variance is very low, it's a solid background
-        if np.max(std_dev) < 18.0:
-            median_color = np.median(border_pixels, axis=0)
+        # 2. Dominant color detection! Find the most common color in the border
+        # This handles cases where the watermark is over text, but the background is solid.
+        bp_rounded = (border_pixels / 15.0).astype(np.int32) * 15
+        unique, counts = np.unique(bp_rounded, axis=0, return_counts=True)
+        best_idx = np.argmax(counts)
+        dominant_ratio = counts[best_idx] / len(border_pixels)
+        
+        # If one color dominates > 60% of the border, treat it as a solid background!
+        if dominant_ratio > 0.60:
+            dom_color_approx = unique[best_idx]
+            match_mask = np.max(np.abs(border_pixels - dom_color_approx), axis=1) <= 20
+            median_color = np.median(border_pixels[match_mask], axis=0)
+            
             result = img.copy()
             result[mask > 0] = median_color
             # Light edge blending so the patch isn't a harsh cut

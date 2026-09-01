@@ -653,7 +653,7 @@ class MainWindow(QMainWindow):
         if self._tabs.tabText(i).strip().startswith("🗂"):
             self._gv.refresh()
         elif self._tabs.tabText(i).strip().startswith("⏳") or i == 3:
-            self._pv.refresh()
+            self._pv.sync_tasks()
         self._update_undo_label()
         self._refresh_zoom_lbl()
 
