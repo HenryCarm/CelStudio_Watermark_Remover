@@ -52,6 +52,7 @@ MOBILE_WIDTH_THRESHOLD = 700   # px — treat as mobile if window width < this
 
 def get_data_dir() -> Path:
     try:
+        from .settings_manager import load_settings
         s = load_settings()
         c = s.get("custom_data_dir")
         if c:
@@ -64,6 +65,7 @@ def get_data_dir() -> Path:
 
 def get_save_dir() -> Path:
     try:
+        from .settings_manager import load_settings
         s = load_settings()
         c = s.get("custom_save_dir")
         if c:
@@ -76,6 +78,7 @@ def get_save_dir() -> Path:
 
 def get_log_dir() -> Path:
     try:
+        from .settings_manager import load_settings
         s = load_settings()
         c = s.get("custom_log_dir")
         if c:
@@ -100,6 +103,7 @@ def get_app_icon() -> QIcon:
 
 def get_wallpaper_path() -> Path:
     try:
+        from .settings_manager import load_settings
         s = load_settings()
         c = s.get("wallpaper_path")
         if c and Path(c).exists():
